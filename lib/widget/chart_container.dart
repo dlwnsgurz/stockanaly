@@ -4,6 +4,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:stock_anal/models/stock_price.dart';
+import 'package:stock_anal/models/stock_prob.dart';
 import 'package:stock_anal/widget/chart.dart';
 import 'package:stock_anal/widget/price_widget.dart';
 
@@ -18,7 +19,7 @@ class _ChartContainerState extends State<ChartContainer> {
   final textEditingController = TextEditingController();
   List<StockPrice> _stockDatas = [];
   String? selectedValue;
-
+  StockProb? selectedStock;
   List<String> stocks = [];
 
   List<String> selectedItems = [];
@@ -74,6 +75,64 @@ class _ChartContainerState extends State<ChartContainer> {
     }
   }
 
+  void _getProbs(String title) async {
+    String baseUrl = "http://192.168.0.5:3000/stocks/probs/$title";
+    final response = await http.get(Uri.parse(baseUrl));
+    final result = Map<String, dynamic>.of(jsonDecode(response.body));
+
+    final List<dynamic> rawList = result["data"];
+    print(rawList);
+
+    for (final item in rawList) {
+      final double? BaseandConversionNarrowStatus =
+          item["Base and Conversion Narrow Status"];
+      final double? leadingSpanTailDirection =
+          item["Leading Span Tail Direction"];
+      final double? a120dayCrossMaCheck = item["120day cross MA Check"];
+      final double? a20dayCrossMaCheck = item["20day cross MA Check"];
+      final double? conversionXBaseLine = item["Conversion x Base line"];
+      final double? bongXBaseAndConversion = item["Bong x Base and Conversion"];
+      final double? bongAndCloudStatus = item["Bong and Cloud Status"];
+      final double? a5dayCrossMaCheck = item["5day cross MA Check"];
+      final double? a60DaysMaTrend = item["60 days MA Trend"];
+      final double? a60dayCrossMaCheck = item["60day cross MA Check"];
+      final double? a9dayHighestPriceTrend = item["9day Highest Price Trend"];
+      final double? a10dayCrossMaCheck = item["10day cross MA Check"];
+      final double? macdStatus = item["MACD Status"];
+      final double? baseAndConversionNarrowStatus =
+          item["Base and Conversion Narrow Status (for Lagging)"];
+      final double? a26dayHighestPriceTrend = item["26day Highest Price Trend"];
+      final double? laggingSpanXBaseAndConversion =
+          item["Lagging Span x Base and conversion"];
+      final double? laggingSpanXBong = item["Lagging Span x Bong"];
+      final stockProb = StockProb(
+        BaseandConversionNarrowStatus: BaseandConversionNarrowStatus ?? 0,
+        Leading_Span_Tail_Direction: leadingSpanTailDirection ?? 0,
+        a120day_cross_MA_Check: a120dayCrossMaCheck ?? 0,
+        a20day_cross_MA_Check: a20dayCrossMaCheck ?? 0,
+        Conversion_x_Base_line: conversionXBaseLine ?? 0,
+        Bong_x_Base_and_Conversion: bongXBaseAndConversion ?? 0,
+        Bong_and_Cloud_Status: bongAndCloudStatus ?? 0,
+        a5day_cross_MA_Check: a5dayCrossMaCheck ?? 0,
+        a60_days_MA_Trend: a60DaysMaTrend ?? 0,
+        a60day_cross_MA_Check: a60dayCrossMaCheck ?? 0,
+        a9day_Highest_Price_Trend: a9dayHighestPriceTrend ?? 0,
+        a10day_cross_MA_Check: a10dayCrossMaCheck ?? 0,
+        MACD_Status: macdStatus ?? 0,
+        Base_and_Conversion_Narrow_Status: baseAndConversionNarrowStatus ?? 0,
+        a26day_Highest_Price_Trend: a26dayHighestPriceTrend ?? 0,
+        Lagging_Span_x_Base_and_conversion: laggingSpanXBaseAndConversion ?? 0,
+        Lagging_Span_x_Bong: laggingSpanXBong ?? 0,
+      );
+      setState(() {
+        selectedStock = stockProb;
+      });
+      print(selectedStock);
+    }
+
+    final List<StockPrice> datas = [];
+  }
+
   void _getStock(String title) async {
     try {
       String baseUrl = "http://192.168.0.5:3000/stocks/info/$title";
@@ -94,12 +153,12 @@ class _ChartContainerState extends State<ChartContainer> {
         );
         datas.add(stockPrice);
       }
+
       if (mounted) {
         setState(() {
           _stockDatas = datas;
         });
       }
-      print(datas);
     } catch (error) {
       print(error);
       print("에러뜸");
@@ -174,6 +233,7 @@ class _ChartContainerState extends State<ChartContainer> {
                             selectedValue = value;
                           });
                           _getStock(selectedValue!);
+                          _getProbs(selectedValue!);
                         },
                         buttonStyleData: const ButtonStyleData(
                           padding: EdgeInsets.symmetric(horizontal: 16),
