@@ -45,34 +45,16 @@ class _ChartState extends State<Chart> {
     return Stack(
       children: <Widget>[
         Container(
-          width: MediaQuery.of(context).size.width - 300, // 전체 너비 사용
+          width: MediaQuery.of(context).size.width - 200, // 전체 너비 사용
           height: 400, // 높이는 원하는 값으로 설정
           padding: const EdgeInsets.only(
             right: 18,
-            left: 12,
+            left: 0,
             top: 24,
             bottom: 12,
           ),
           child: LineChart(
             showAvg ? avgData() : mainData(),
-          ),
-        ),
-        SizedBox(
-          width: 60,
-          height: 34,
-          child: TextButton(
-            onPressed: () {
-              setState(() {
-                showAvg = !showAvg;
-              });
-            },
-            child: Text(
-              'avg',
-              style: TextStyle(
-                fontSize: 12,
-                color: showAvg ? Colors.white.withOpacity(0.5) : Colors.white,
-              ),
-            ),
           ),
         ),
       ],
@@ -87,7 +69,7 @@ class _ChartState extends State<Chart> {
     Widget text;
     switch (value.toInt()) {
       case 0:
-        text = const Text('한달 전', style: style);
+        text = const Text('한달전', style: style);
         break;
       case 1:
         text = const Text('25일전', style: style);
@@ -103,6 +85,9 @@ class _ChartState extends State<Chart> {
         break;
       case 5:
         text = const Text('5일전', style: style);
+        break;
+      case 6:
+        text = const Text('어제', style: style);
         break;
       default:
         text = const Text('', style: style);
@@ -121,21 +106,26 @@ class _ChartState extends State<Chart> {
       fontSize: 15,
     );
     String text;
-    switch (value.toInt()) {
-      case 1:
-        text = '10K';
-        break;
-      case 3:
-        text = '30k';
-        break;
-      case 5:
-        text = '50k';
-        break;
-      default:
-        return Container();
+    final minV = _getMinPrice().toInt();
+    final maxV = _getMaxPrice().toInt();
+    final avgV = (minV + maxV) / 2;
+    if (value.toInt() == minV) {
+      text = '${(minV / 1000).round()}K';
+    } else if (value.toInt() == maxV) {
+      text = '${(maxV / 1000).round()}K';
+    } else if (value.toInt() == avgV) {
+      text = '${(avgV / 1000).round()}K';
+    } else {
+      return Container();
     }
 
-    return Text(text, style: style, textAlign: TextAlign.left);
+    return SizedBox(
+      child: Text(
+        text,
+        style: style,
+        textAlign: TextAlign.left,
+      ),
+    );
   }
 
   LineChartData mainData() {
