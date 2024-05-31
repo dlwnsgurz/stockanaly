@@ -6,7 +6,7 @@ class AnalysisContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400,
+      height: MediaQuery.of(context).size.height * 0.3,
       width: double.infinity,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),

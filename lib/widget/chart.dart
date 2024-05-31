@@ -1,9 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_anal/models/stock_price.dart';
 
 class Chart extends StatefulWidget {
-  const Chart({super.key});
-
+  const Chart({super.key, required this.datas});
+  final List<StockPrice> datas;
   @override
   State<Chart> createState() => _ChartState();
 }
@@ -15,6 +16,29 @@ class _ChartState extends State<Chart> {
   ];
 
   bool showAvg = false;
+
+  double _getMinPrice() {
+    if (widget.datas.isEmpty) return 0;
+    var idx = 0;
+    for (int i = 0; i < widget.datas.length; i++) {
+      if (widget.datas[i].endPrice < widget.datas[idx].endPrice) {
+        idx = i;
+      }
+    }
+    return widget.datas[idx].endPrice;
+  }
+
+  double _getMaxPrice() {
+    if (widget.datas.isEmpty) return 0;
+
+    var idx = 0;
+    for (int i = 0; i < widget.datas.length; i++) {
+      if (widget.datas[i].endPrice > widget.datas[idx].endPrice) {
+        idx = i;
+      }
+    }
+    return widget.datas[idx].endPrice;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,23 +86,23 @@ class _ChartState extends State<Chart> {
     );
     Widget text;
     switch (value.toInt()) {
+      case 0:
+        text = const Text('한달 전', style: style);
+        break;
       case 1:
-        text = const Text('1/1', style: style);
+        text = const Text('25일전', style: style);
+        break;
+      case 2:
+        text = const Text('20일전', style: style);
         break;
       case 3:
-        text = const Text('3/1', style: style);
+        text = const Text('15일전', style: style);
+        break;
+      case 4:
+        text = const Text('10일전', style: style);
         break;
       case 5:
-        text = const Text('5/1', style: style);
-        break;
-      case 7:
-        text = const Text('7/1', style: style);
-        break;
-      case 9:
-        text = const Text('9/1', style: style);
-        break;
-      case 11:
-        text = const Text('11/1', style: style);
+        text = const Text('5일전', style: style);
         break;
       default:
         text = const Text('', style: style);
@@ -115,6 +139,24 @@ class _ChartState extends State<Chart> {
   }
 
   LineChartData mainData() {
+    final List<FlSpot> spots = [];
+    if (widget.datas.isEmpty) {
+      for (int i = 0; i < 8; i++) {
+        const spot = FlSpot(0, 0);
+        spots.add(spot);
+      }
+    } else {
+      for (int i = 0; i < widget.datas.length; i += 5) {
+        final spot =
+            FlSpot(double.parse((i / 4).toString()), widget.datas[i].endPrice);
+        spots.add(spot);
+      }
+      print("길이는 : ${spots.length}");
+    }
+
+    print("주가는 $spots");
+    print("최대 ${_getMaxPrice()}");
+    print("최소 ${_getMinPrice()}");
     return LineChartData(
       gridData: FlGridData(
         show: true,
@@ -164,20 +206,12 @@ class _ChartState extends State<Chart> {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 0,
-      maxX: 11,
-      minY: 0,
-      maxY: 6,
+      maxX: double.parse(spots.length.toString()),
+      minY: _getMinPrice(),
+      maxY: _getMaxPrice(),
       lineBarsData: [
         LineChartBarData(
-          spots: const [
-            FlSpot(0, 3),
-            FlSpot(2.6, 2),
-            FlSpot(4.9, 5),
-            FlSpot(6.8, 3.1),
-            FlSpot(8, 4),
-            FlSpot(9.5, 3),
-            FlSpot(11, 4),
-          ],
+          spots: spots,
           isCurved: true,
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -256,7 +290,7 @@ class _ChartState extends State<Chart> {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 0,
-      maxX: 11,
+      maxX: 8,
       minY: 0,
       maxY: 6,
       lineBarsData: [
@@ -268,7 +302,6 @@ class _ChartState extends State<Chart> {
             FlSpot(6.8, 3.44),
             FlSpot(8, 3.44),
             FlSpot(9.5, 3.44),
-            FlSpot(11, 3.44),
           ],
           isCurved: true,
           gradient: LinearGradient(
