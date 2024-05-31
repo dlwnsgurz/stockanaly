@@ -53,7 +53,7 @@ class _ChartContainerState extends State<ChartContainer> {
 
   void _getCode() async {
     try {
-      String baseUrl = "http://192.168.0.5:3000/stocks/kospi/company";
+      String baseUrl = "http://192.168.0.5:3000/stocks/allcompany";
 
       final response = await http.get(Uri.parse(baseUrl));
 
