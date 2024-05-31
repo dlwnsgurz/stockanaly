@@ -84,29 +84,42 @@ class _ChartContainerState extends State<ChartContainer> {
     print(rawList);
 
     for (final item in rawList) {
-      final double? BaseandConversionNarrowStatus =
-          item["Base and Conversion Narrow Status"];
-      final double? leadingSpanTailDirection =
-          item["Leading Span Tail Direction"];
-      final double? a120dayCrossMaCheck = item["120day cross MA Check"];
-      final double? a20dayCrossMaCheck = item["20day cross MA Check"];
-      final double? conversionXBaseLine = item["Conversion x Base line"];
-      final double? bongXBaseAndConversion = item["Bong x Base and Conversion"];
-      final double? bongAndCloudStatus = item["Bong and Cloud Status"];
-      final double? a5dayCrossMaCheck = item["5day cross MA Check"];
-      final double? a60DaysMaTrend = item["60 days MA Trend"];
-      final double? a60dayCrossMaCheck = item["60day cross MA Check"];
-      final double? a9dayHighestPriceTrend = item["9day Highest Price Trend"];
-      final double? a10dayCrossMaCheck = item["10day cross MA Check"];
-      final double? macdStatus = item["MACD Status"];
       final double? baseAndConversionNarrowStatus =
-          item["Base and Conversion Narrow Status (for Lagging)"];
-      final double? a26dayHighestPriceTrend = item["26day Highest Price Trend"];
-      final double? laggingSpanXBaseAndConversion =
-          item["Lagging Span x Base and conversion"];
-      final double? laggingSpanXBong = item["Lagging Span x Bong"];
+          double.tryParse(item["Base and Conversion Narrow Status"].toString());
+      final double? leadingSpanTailDirection =
+          double.tryParse(item["Leading Span Tail Direction"].toString());
+      final double? a120dayCrossMaCheck =
+          double.tryParse(item["120day cross MA Check"].toString());
+      final double? a20dayCrossMaCheck =
+          double.tryParse(item["20day cross MA Check"].toString());
+      final double? conversionXBaseLine =
+          double.tryParse(item["Conversion x Base line"].toString());
+      final double? bongXBaseAndConversion =
+          double.tryParse(item["Bong x Base and Conversion"].toString());
+      final double? bongAndCloudStatus =
+          double.tryParse(item["Bong and Cloud Status"].toString());
+      final double? a5dayCrossMaCheck =
+          double.tryParse(item["5day cross MA Check"].toString());
+      final double? a60DaysMaTrend =
+          double.tryParse(item["60 days MA Trend"].toString());
+      final double? a60dayCrossMaCheck =
+          double.tryParse(item["60day cross MA Check"].toString());
+      final double? a9dayHighestPriceTrend =
+          double.tryParse(item["9day Highest Price Trend"].toString());
+      final double? a10dayCrossMaCheck =
+          double.tryParse(item["10day cross MA Check"].toString());
+      final double? macdStatus =
+          double.tryParse(item["MACD Status"].toString());
+      final double? baseAndConversionNarrowStatusLagging = double.tryParse(
+          item["Base and Conversion Narrow Status (for Lagging)"].toString());
+      final double? a26dayHighestPriceTrend =
+          double.tryParse(item["26day Highest Price Trend"].toString());
+      final double? laggingSpanXBaseAndConversion = double.tryParse(
+          item["Lagging Span x Base and conversion"].toString());
+      final double? laggingSpanXBong =
+          double.tryParse(item["Lagging Span x Bong"].toString());
       final stockProb = StockProb(
-        BaseandConversionNarrowStatus: BaseandConversionNarrowStatus ?? 0,
+        BaseandConversionNarrowStatus: baseAndConversionNarrowStatus ?? 0,
         Leading_Span_Tail_Direction: leadingSpanTailDirection ?? 0,
         a120day_cross_MA_Check: a120dayCrossMaCheck ?? 0,
         a20day_cross_MA_Check: a20dayCrossMaCheck ?? 0,
@@ -127,7 +140,6 @@ class _ChartContainerState extends State<ChartContainer> {
       setState(() {
         selectedStock = stockProb;
       });
-      print(selectedStock);
     }
 
     final List<StockPrice> datas = [];
