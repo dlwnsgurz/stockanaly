@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:stock_anal/widget/analysis_container.dart';
 import 'package:stock_anal/widget/chart_container.dart';
 
 void main() {
@@ -36,10 +35,7 @@ class _MainPageState extends State<MainPage> {
       backgroundColor: Color.fromARGB(255, 242, 242, 242),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 50, vertical: 40),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [ChartContainer(), AnalysisContainer()],
-        ),
+        child: ChartContainer(),
       ),
     );
   }
